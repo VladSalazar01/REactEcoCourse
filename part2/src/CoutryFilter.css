@@ -1,0 +1,19 @@
+/* CountryFilter.css */
+
+.country-filter {
+  margin: 20px;
+}
+
+.country-filter input {
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.country-filter ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.country-filter li {
+  margin: 5px 0;
+}

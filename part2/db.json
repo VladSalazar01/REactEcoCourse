@@ -1,0 +1,39 @@
+{
+  "persons": [
+    {
+      "id": "1",
+      "name": "Arto's imposter",
+      "number": "8500"
+    },
+    {
+      "id": "2",
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523"
+    },
+    {
+      "id": "3",
+      "name": "Dan Abramov",
+      "number": "12-43-234345"
+    },
+    {
+      "id": "8da0",
+      "name": "Stefanny Stardust",
+      "number": "2600"
+    },
+    {
+      "id": "3e15",
+      "name": "Kuyuha Anubita",
+      "number": "9"
+    },
+    {
+      "id": "a838",
+      "name": "kuyuha's imposter",
+      "number": "137"
+    },
+    {
+      "id": "0947",
+      "name": "Fake kuyuha anubita",
+      "number": "55"
+    }
+  ]
+}
