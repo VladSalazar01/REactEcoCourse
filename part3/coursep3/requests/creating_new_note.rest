@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/notes
+
+Content-Type: application/json
+{
+    "content":"VScodeclient es lo que se usa ahora",
+    "important": true
+} 
