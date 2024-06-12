@@ -2,12 +2,21 @@ const http = require('http')
 const express = require('express')
 const fs = require('fs')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
 
   app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
+
+// Crear un token personalizado para registrar el cuerpo de las solicitudes POST
+morgan.token('body', (req) => {
+  return req.method === 'POST' ? JSON.stringify(req.body) : ''
+})
+
+// Configurar morgan para registrar mensajes en la consola utilizando la configuración "tiny" y el token personalizado
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
   const getPersons = () => {
   const data = fs.readFileSync('persons.json', 'utf-8')
@@ -38,10 +47,8 @@ app.use(express.json())
   app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     let persons = getPersons()
-
     // Filtrar la lista de personas para excluir la entrada con el ID proporcionado
     const filteredPersons = persons.filter(person => person.id !== id)
-
     // Verificar si se eliminó alguna entrada
     if (persons.length !== filteredPersons.length) {
         // Guardar la nueva lista de personas en el archivo JSON
@@ -92,6 +99,18 @@ app.use(express.json())
     response.json(newPerson)
   })
     
+  app.get('/info', (request, response) => {
+    const date = new Date()
+    const persons = getPersons()
+    const numberOfEntries = persons.length
+  
+    const info = `
+      <p>Request received at: ${date}</p>
+      <p>Number of entries in the phonebook: ${numberOfEntries}</p>
+    `
+  
+    response.send(info)
+  })
 
 const PORT = 3001
 app.listen(PORT)
