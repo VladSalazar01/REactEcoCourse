@@ -8,66 +8,16 @@ import './index.css'
 import Note from './components/Note'
 //import Course from './components/Course'
 import CountryFilter from './CountryFilter';
+import Notification from './components/Notification';
+import SearchFilter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Persons from './components/Persons';
 
 
 //EJERCICIOS 2.6 - 2.18
 
 
-//componente para notificaciones de error
-const Notification = ({ message, type }) => {
-  if (message === null) {
-    return null;
-  }
-  const className = type === 'error' ? 'error' : 'success';
-  return (
-    <div className={className}>
-      {message}
-    </div>
-  );
-};
 
-// Componente para el filtro de búsqueda
-const SearchFilter = ({ searchTerm, handleSearchTerm }) => (
-  <div>
-    {/* Campo de entrada para el término de búsqueda */}
-    filter shown with: <input value={searchTerm} onChange={handleSearchTerm} />
-  </div>
-);
-
-// Componente para el formulario de agregar personas
-const PersonForm = ({ newName, handleNewName, newNumber, handleNewNumber, addPerson }) => (
-  <form onSubmit={addPerson}>
-    <div>
-      {/* Campo de entrada para el nombre */}
-      name: <input value={newName} onChange={handleNewName} />
-    </div>
-    <div>
-      {/* Campo de entrada para el número de teléfono */}
-      number: <input value={newNumber} onChange={handleNewNumber} />
-    </div>
-    <div>
-      {/* Botón para enviar el formulario */}
-      <button type="submit">add</button>
-    </div>
-  </form>
-);
-
-// Componente para renderizar los detalles de una sola persona + delete button
-const Person = ({ person, deletePerson }) => (
-  <li>
-    {person.name} {person.number}
-    <button onClick={() => deletePerson(person.id)}>delete</button>
-  </li>
-);
-// Componente para renderizar todas las personas del directorio telefónico
-const Persons = ({ persons, deletePerson  }) => (
-  <ul>
-    {persons.map(person => 
-      // Renderiza cada persona usando el componente Person + delete
-      <Person key={person.id} person={person} deletePerson={deletePerson} />
-    )}
-  </ul>
-);
 
 const App = () => {
   // Estado para la lista de personas
