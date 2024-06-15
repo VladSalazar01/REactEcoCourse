@@ -1,9 +1,12 @@
 const http = require('http')
 const express = require('express')
 const fs = require('fs')
+const cors = require('cors')
 const app = express()
 const morgan = require('morgan')
 
+
+app.use(cors())  // Enable CORS for all routes
 app.use(express.json())
 
   app.get('/', (request, response) => {

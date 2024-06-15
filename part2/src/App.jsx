@@ -13,11 +13,7 @@ import SearchFilter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 
-
 //EJERCICIOS 2.6 - 2.18
-
-
-
 
 const App = () => {
   // Estado para la lista de personas

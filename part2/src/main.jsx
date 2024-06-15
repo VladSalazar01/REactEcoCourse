@@ -3,11 +3,6 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 
-
-
-
-
-
 //const notes is an example
 const notes = [
   {
