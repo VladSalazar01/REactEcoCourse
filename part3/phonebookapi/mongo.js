@@ -7,7 +7,7 @@ if (process.argv.length < 3) {
 }
 
 
-const uri = "mongodb+srv://vosalazar26:<nopassword>@clustervlads.luqtkgj.mongodb.net/?retryWrites=true&w=majority&appName=ClusterVladS";
+const uri = "mongodb+srv://vosalazar26:<pw>@clustervlads.luqtkgj.mongodb.net/?retryWrites=true&w=majority&appName=ClusterVladS";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -24,9 +24,8 @@ async function run() {
     // Connect to MongoDB
     await client.connect();
     console.log("Connected to MongoDB!");
-
-    const db = client.db("phonebook");
-    const collection = db.collection("persons");
+    const db = client.db("phonebookapivladsDB");
+    const collection = db.collection("phonebookapiVS");
 
     if (process.argv.length === 3) {
       // List all entries
