@@ -1,120 +1,112 @@
-const http = require('http')
-const express = require('express')
-const fs = require('fs')
-const cors = require('cors')
-const app = express()
-const morgan = require('morgan')
+require('dotenv').config();
 
 
-app.use(cors())  // Enable CORS for all routes
-app.use(express.json())
+const http = require('http');
+const express = require('express');
+const fs = require('fs');
+const morgan = require('morgan');
+const mongoModule = require('./mongoModule'); // Import the Mongoose module
 
-  app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-  })
+const app = express();
+app.use(express.json());
 
-// Crear un token personalizado para registrar el cuerpo de las solicitudes POST
+// Create a custom token for logging the body of POST requests
 morgan.token('body', (req) => {
-  return req.method === 'POST' ? JSON.stringify(req.body) : ''
-})
+  return req.method === 'POST' ? JSON.stringify(req.body) : '';
+});
 
-// Configurar morgan para registrar mensajes en la consola utilizando la configuración "tiny" y el token personalizado
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+// Configure morgan to log messages in the console using the "tiny" configuration and the custom token
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-  const getPersons = () => {
-  const data = fs.readFileSync('persons.json', 'utf-8')
-  return JSON.parse(data)
+app.get('/', (request, response) => {
+  response.send('<h1>Hello World!</h1>');
+});
+
+app.get('/api/persons', async (request, response) => {
+  try {
+    const persons = await mongoModule.getAllPersons();
+    response.json(persons);
+  } catch (error) {
+    console.error(error);
+    response.status(500).send({ error: 'Failed to fetch persons' });
   }
+});
 
-  const savePersons = (persons) => {
-    fs.writeFileSync('persons.json', JSON.stringify(persons, null, 2))
-  }
-
-  app.get('/api/persons', (request, response) => {
-    const persons = getPersons()
-    response.json(persons)
-  })
-
-  app.get('/api/persons/:id', (request, response) => {
-    const persons = getPersons()
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-  
+app.get('/api/persons/:id', async (request, response) => {
+  const id = Number(request.params.id);
+  try {
+    const persons = await mongoModule.getAllPersons();
+    const person = persons.find(p => p.id === id);
     if (person) {
-      response.json(person)
+      response.json(person);
     } else {
-        response.status(404).send('No se ha encontrado en contacto')
+      response.status(404).send('Contact not found');
     }
-  })
-
-  app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    let persons = getPersons()
-    // Filtrar la lista de personas para excluir la entrada con el ID proporcionado
-    const filteredPersons = persons.filter(person => person.id !== id)
-    // Verificar si se eliminó alguna entrada
-    if (persons.length !== filteredPersons.length) {
-        // Guardar la nueva lista de personas en el archivo JSON
-        savePersons(filteredPersons)
-        response.status(204).end() // Indicar que la operación se realizó con éxito (No Content)
-    } else {
-        // Si no se encuentra ninguna entrada con el ID dado, devolver un error 404
-        response.status(404).json({ error: 'Entry not found' })
-    }
-  })  
-  
-  const generateId = (persons) => {
-    const maxId = persons.length > 0
-      ? Math.max(...persons.map(n => n.id))
-      : 0
-    return maxId + 1
+  } catch (error) {
+    console.error(error);
+    response.status(500).send({ error: 'Failed to fetch person' });
   }
-  
-  app.post('/api/persons', (request, response) => {
-    const body = request.body  
-    // Verificar si falta el nombre o el número en la solicitud
-    if (!body.name || !body.number) {
-      return response.status(400).json({ 
-        error: 'Name or number is missing' 
-      })
-    }  
-    // Verificar si el nombre ya existe en el directorio telefónico
-    const persons = getPersons()
-    const duplicateName = persons.find(person => person.name === body.name)
-    if (duplicateName) {
-      return response.status(400).json({ 
-        error: 'Name already exists in the phonebook' 
-      })
-    }  
-    // Generar un nuevo ID único
-    const id = Math.floor(Math.random() * 1000000)  
-    // Crear un nuevo objeto de persona
-    const newPerson = {
-      id: id,
-      name: body.name,
-      number: body.number
-    }  
-    // Agregar la nueva persona a la lista
-    persons.push(newPerson)  
-    // Guardar la lista actualizada en el archivo JSON
-    savePersons(persons)  
-    // Responder con la nueva persona creada
-    response.json(newPerson)
-  })
-    
-  app.get('/info', (request, response) => {
-    const date = new Date()
-    const persons = getPersons()
-    const numberOfEntries = persons.length
-  
+});
+
+app.delete('/api/persons/:id', async (request, response) => {
+  const id = Number(request.params.id);
+  let persons = await mongoModule.getAllPersons();
+  // Filter the list of persons to exclude the entry with the given ID
+  const filteredPersons = persons.filter(person => person.id !== id);
+  // Check if any entry was deleted
+  if (persons.length !== filteredPersons.length) {
+    // Save the new list of persons to the JSON file
+    savePersons(filteredPersons);
+    response.status(204).end(); // Indicate that the operation was successful (No Content)
+  } else {
+    // If no entry with the given ID is found, return a 404 error
+    response.status(404).json({ error: 'Entry not found' });
+  }
+});
+
+app.post('/api/persons', async (request, response) => {
+  const body = request.body;
+  // Check if the name or number is missing in the request
+  if (!body.name || !body.number) {
+    return response.status(400).json({ 
+      error: 'Name or number is missing' 
+    });
+  }
+  // Check if the name already exists in the phonebook
+  const persons = await mongoModule.getAllPersons();
+  const duplicateName = persons.find(person => person.name === body.name);
+  if (duplicateName) {
+    return response.status(400).json({ 
+      error: 'Name already exists in the phonebook' 
+    });
+  }
+  // Add the new person to the database
+  try {
+    const newPerson = await mongoModule.addPerson(body.name, body.number);
+    response.json(newPerson);
+  } catch (error) {
+    console.error(error);
+    response.status(500).send({ error: 'Failed to add person' });
+  }
+});
+
+app.get('/info', async (request, response) => {
+  const date = new Date();
+  try {
+    const persons = await mongoModule.getAllPersons();
+    const numberOfEntries = persons.length;
     const info = `
       <p>Request received at: ${date}</p>
       <p>Number of entries in the phonebook: ${numberOfEntries}</p>
-    `
-  
-    response.send(info)
-  })
+    `;
+    response.send(info);
+  } catch (error) {
+    console.error(error);
+    response.status(500).send({ error: 'Failed to fetch persons' });
+  }
+});
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

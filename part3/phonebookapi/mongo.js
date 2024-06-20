@@ -1,59 +1,60 @@
+require('dotenv').config();
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+
+const mongoose = require('mongoose');
+const mongoModule = require('./mongoModule'); // Import the Mongoose module
+require('dotenv').config();
 
 if (process.argv.length < 3) {
   console.log('Usage: node mongo.js <password> [name] [number]');
   process.exit(1);
 }
 
+const password = process.argv[2];
+const uri = `mongodb+srv://vosalazar26:${password}@clustervlads.luqtkgj.mongodb.net/phonebook?retryWrites=true&w=majority`;
 
-const uri = "mongodb+srv://vosalazar26:<pw>@clustervlads.luqtkgj.mongodb.net/?retryWrites=true&w=majority&appName=ClusterVladS";
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-  useUnifiedTopology: true
-});
+// Connect to MongoDB
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+    run();
+  })
+  .catch(error => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
 
 async function run() {
-  try {
-    // Connect to MongoDB
-    await client.connect();
-    console.log("Connected to MongoDB!");
-    const db = client.db("phonebookapivladsDB");
-    const collection = db.collection("phonebookapiVS");
-
-    if (process.argv.length === 3) {
-      // List all entries
-      const persons = await collection.find({}).toArray();
+  if (process.argv.length === 3) {
+    // List all entries
+    try {
+      const persons = await mongoModule.getAllPersons();
       console.log('Phonebook:');
       persons.forEach(person => {
         console.log(`${person.name} ${person.number}`);
       });
-    } else if (process.argv.length === 5) {
-      // Add a new entry
-      const name = process.argv[3];
-      const number = process.argv[4];
-
-      const newPerson = { name, number };
-      const result = await collection.insertOne(newPerson);
-      console.log(`Added ${name} number ${number} to phonebook`);
-    } else {
-      console.log('Usage: node mongo.js <password> [name] [number]');
+    } catch (error) {
+      console.error('Error fetching persons:', error.message);
+    } finally {
+      mongoose.connection.close();
     }
-  } catch (error) {
-    console.error("Error:", error);
-  } finally {
-    // Close the connection
-    await client.close();
+  } else if (process.argv.length === 5) {
+    // Add a new entry
+    const name = process.argv[3];
+    const number = process.argv[4];
+
+    try {
+      const newPerson = await mongoModule.addPerson(name, number);
+      console.log(`Added ${newPerson.name} number ${newPerson.number} to phonebook`);
+    } catch (error) {
+      console.error('Error adding person:', error.message);
+    } finally {
+      mongoose.connection.close();
+    }
+  } else {
+    console.log('Usage: node mongo.js <password> [name] [number]');
+    mongoose.connection.close();
   }
 }
-
-run().catch(console.dir);
 
 /*
 const mongoose = require('mongoose');
