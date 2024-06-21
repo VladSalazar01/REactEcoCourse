@@ -22,13 +22,14 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>');
 });
 
-app.get('/api/persons', async (request, response) => {
+
+app.get('/api/persons', async (req, res) => {
   try {
     const persons = await mongoModule.getAllPersons();
-    response.json(persons);
+    console.log(persons);  // Log the persons fetched
+    res.json(persons);
   } catch (error) {
-    console.error(error);
-    response.status(500).send({ error: 'Failed to fetch persons' });
+    res.status(500).json({ error: 'Failed to fetch persons' });
   }
 });
 

@@ -1,6 +1,3 @@
-require('dotenv').config();
-
-
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -23,18 +20,30 @@ const personSchema = new mongoose.Schema({
   number: String,
 });
 
-const Person = mongoose.model('Person', personSchema);
+const Person = mongoose.model('Person', personSchema, 'phonebookapiVS');
 
-const getAllPersons = () => {
-  return Person.find({});
+const getAllPersons = async () => {
+  try {
+    const persons = await Person.find({});
+    return persons;
+  } catch (error) {
+    console.error('Error fetching persons:', error);
+    throw error;
+  }
 };
 
-const addPerson = (name, number) => {
+const addPerson = async (name, number) => {
   const person = new Person({
     name,
     number,
   });
-  return person.save();
+  try {
+    const savedPerson = await person.save();
+    return savedPerson;
+  } catch (error) {
+    console.error('Error adding person:', error);
+    throw error;
+  }
 };
 
 module.exports = {
