@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
 import axios from 'axios'
+import Note from './components/Note';
+//import Course from './components/Course';
 import personService from './services/persons';
-import './index.css'
-import Note from './components/Note'
-//import Course from './components/Course'
+import './index.css';
+import './App.css';
+import React, { useState, useEffect } from 'react';
 import CountryFilter from './CountryFilter';
 import Notification from './components/Notification';
 import SearchFilter from './components/Filter';

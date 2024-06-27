@@ -1,14 +1,15 @@
 require('dotenv').config();
 
-
 const http = require('http');
 const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
 const mongoModule = require('./mongoModule'); // Import the Mongoose module
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Create a custom token for logging the body of POST requests
 morgan.token('body', (req) => {
