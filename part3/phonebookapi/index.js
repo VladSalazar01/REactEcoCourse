@@ -6,6 +6,7 @@ const fs = require('fs');
 const morgan = require('morgan');
 const mongoModule = require('./mongoModule'); // Import the Mongoose module
 const cors = require('cors');
+const { ObjectId } = require('mongodb');
 
 const app = express();
 app.use(express.json());
@@ -51,18 +52,20 @@ app.get('/api/persons/:id', async (request, response) => {
 });
 
 app.delete('/api/persons/:id', async (request, response) => {
-  const id = Number(request.params.id);
-  let persons = await mongoModule.getAllPersons();
+  const id = request.params.id;
+
+  try { 
+    const result = await mongoModule.deletePersonById(id);
   // Filter the list of persons to exclude the entry with the given ID
-  const filteredPersons = persons.filter(person => person.id !== id);
-  // Check if any entry was deleted
-  if (persons.length !== filteredPersons.length) {
-    // Save the new list of persons to the JSON file
-    savePersons(filteredPersons);
+  if (result.deletedCount === 1) {
     response.status(204).end(); // Indicate that the operation was successful (No Content)
+    // Check if any entry was deleted
   } else {
-    // If no entry with the given ID is found, return a 404 error
     response.status(404).json({ error: 'Entry not found' });
+  }   
+    // If no entry with the given ID is found, return a 404 error
+  } catch (error) {
+    response.status(500).json({ error: 'Failed to delete person' });
   }
 });
 

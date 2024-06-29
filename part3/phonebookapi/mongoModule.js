@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -46,7 +47,18 @@ const addPerson = async (name, number) => {
   }
 };
 
+const deletePersonById = async (id) => {
+  try {
+    const result = await Person.findByIdAndRemove(id);
+    return result;
+  } catch (error) {
+    console.error('Error deleting person:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getAllPersons,
   addPerson,
+  deletePersonById, 
 };

@@ -8,9 +8,13 @@ const Person = ({ person, deletePerson }) => (
 );
 
 const Persons = ({ persons, deletePerson }) => (
+  //falta actualizar completo
   <ul>
     {persons.map(person => 
-      <Person key={person.id} person={person} deletePerson={deletePerson} />
+      <li key={person._id}>
+      {person.name} {person.number}
+      <button onClick={() => deletePerson(person._id)}>delete</button>
+    </li>
     )}
   </ul>
 );
