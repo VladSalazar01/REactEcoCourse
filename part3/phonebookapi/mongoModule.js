@@ -47,10 +47,10 @@ const addPerson = async (name, number) => {
   }
 };
 
-const deletePersonById = async (id) => {
+const deletePersonById   = async (id) => {
   try {
-    const result = await Person.findByIdAndRemove(id);
-    return result;
+    const deletedPerson = await Person.findByIdAndDelete(id);
+    return deletedPerson;
   } catch (error) {
     console.error('Error deleting person:', error);
     throw error;
@@ -60,5 +60,5 @@ const deletePersonById = async (id) => {
 module.exports = {
   getAllPersons,
   addPerson,
-  deletePersonById, 
+  deletePersonById , 
 };

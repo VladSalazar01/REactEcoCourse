@@ -106,11 +106,11 @@ const App = () => {
   
   //Borra la entrada de una persona del phonebook dada la ID
   const deletePerson = (id) => {
-    const person = persons.find(p => p.id === id);
+    const person = persons.find(p => p._id === id);
     if (window.confirm(`Delete ${person.name}?`)) {
       personService.remove(id)
         .then(() => {
-          setPersons(persons.filter(p => p.id !== id));
+          setPersons(persons.filter(p => p._id !== id));
           setNotification({ message: `Deleted ${person.name}`, type: 'success' });
           setTimeout(() => {
             setNotification({ message: null, type: null });

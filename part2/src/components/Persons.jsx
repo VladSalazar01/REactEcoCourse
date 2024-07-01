@@ -7,16 +7,17 @@ const Person = ({ person, deletePerson }) => (
   </li>
 );
 
-const Persons = ({ persons, deletePerson }) => (
-  //falta actualizar completo
-  <ul>
-    {persons.map(person => 
-      <li key={person._id}>
-      {person.name} {person.number}
-      <button onClick={() => deletePerson(person._id)}>delete</button>
-    </li>
-    )}
-  </ul>
-);
+const Persons = ({ persons, deletePerson }) => {
+  return (
+    <div>
+      {persons.map(person => (
+        <div key={person._id}>
+          {person.name} {person.number}
+          <button onClick={() => deletePerson(person._id)}>delete</button>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default Persons;
