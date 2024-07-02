@@ -47,10 +47,20 @@ const addPerson = async (name, number) => {
   }
 };
 
-const deletePersonById   = async (id) => {
+const getPersonById = async (id) => {
   try {
-    const deletedPerson = await Person.findByIdAndDelete(id);
-    return deletedPerson;
+    const person = await Person.findById(id);
+    return person;
+  } catch (error) {
+    console.error('Error fetching person:', error);
+    throw error;
+  }
+};
+
+const deletePersonById = async (id) => {
+  try {
+    const result = await Person.findByIdAndRemove(id);
+    return result;
   } catch (error) {
     console.error('Error deleting person:', error);
     throw error;
@@ -60,5 +70,6 @@ const deletePersonById   = async (id) => {
 module.exports = {
   getAllPersons,
   addPerson,
-  deletePersonById , 
+  getPersonById,
+  deletePersonById  
 };

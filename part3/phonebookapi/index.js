@@ -36,26 +36,27 @@ app.get('/api/persons', async (req, res) => {
 });
 
 app.get('/api/persons/:id', async (request, response) => {
-  const id = Number(request.params.id);
+  const id = request.params.id;
+
   try {
-    const persons = await mongoModule.getAllPersons();
-    const person = persons.find(p => p.id === id);
+    const person = await mongoModule.getPersonById(id);
+
     if (person) {
       response.json(person);
     } else {
-      response.status(404).send('Contact not found');
+      response.status(404).send({ error: 'Person not found' });
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching person:', error);
     response.status(500).send({ error: 'Failed to fetch person' });
   }
 });
 
 app.delete('/api/persons/:id', async (request, response) => {
-  const id = request.params.id;
-
+  const id = request.params.id;  // Use params.id to get the _id from the request
   try { 
-    const deletedPerson = await mongoModule.deletePersonById(id);
+    // Find and delete the person by _id
+    const result = await mongoModule.deletePersonById(id);
   // Filter the list of persons to exclude the entry with the given ID
   if (deletedPerson) {
     response.status(204).end(); // Indicate that the operation was successful (No Content)

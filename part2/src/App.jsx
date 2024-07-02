@@ -123,7 +123,7 @@ const App = () => {
           }, 5000);
         });
     }
-  };
+  };  
 
   // Filtra la lista de personas basado en el término de búsqueda
   const filteredPersons = persons.filter(person =>
