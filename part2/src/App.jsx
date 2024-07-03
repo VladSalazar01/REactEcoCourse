@@ -29,8 +29,7 @@ const App = () => {
   const [notification, setNotification] = useState({ message: null, type: null });
 
   useEffect(() => {
-    personService.getAll()
-      .then(initialPersons => {
+    personService.getAll().then(initialPersons => {
         setPersons(initialPersons);
       });
   }, []);
@@ -123,8 +122,8 @@ const App = () => {
           }, 5000);
         });
     }
-  };  
-
+  };
+  
   // Filtra la lista de personas basado en el término de búsqueda
   const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())

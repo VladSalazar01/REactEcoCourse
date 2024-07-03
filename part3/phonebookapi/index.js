@@ -58,7 +58,7 @@ app.delete('/api/persons/:id', async (request, response) => {
     // Find and delete the person by _id
     const result = await mongoModule.deletePersonById(id);
   // Filter the list of persons to exclude the entry with the given ID
-  if (deletedPerson) {
+  if (result) {
     response.status(204).end(); // Indicate that the operation was successful (No Content)
     // Check if any entry was deleted
   } else {
@@ -66,6 +66,7 @@ app.delete('/api/persons/:id', async (request, response) => {
   }   
     // If no entry with the given ID is found, return a 404 error
   } catch (error) {
+    console.error(error);
     response.status(500).json({ error: 'Failed to delete person' });
   }
 });
