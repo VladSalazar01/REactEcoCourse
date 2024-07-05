@@ -63,9 +63,9 @@ const App = () => {
         const updatedPerson = { ...existingPerson, number: newNumber };
         
         // Actualizar el número de la persona existente
-        personService.update(existingPerson.id, updatedPerson)
+        personService.update(existingPerson._id, updatedPerson)
           .then(returnedPerson => {
-            setPersons(persons.map(p => p.id !== existingPerson.id ? p : returnedPerson));
+            setPersons(persons.map(p => p._id !== existingPerson._id ? p : returnedPerson));
             setNewName('');
             setNewNumber('');
             setNotification({ message: `Updated ${returnedPerson.name}'s number`, type: 'success' });
