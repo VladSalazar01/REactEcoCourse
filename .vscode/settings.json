@@ -1,0 +1,5 @@
+{
+    "CodeGPT.apiKey": "LM Studio",
+    "CodeGPT.Autocomplete.provider": "Ollama - codestral:latest",
+    "CodeGPT.Autocomplete.enabled": true
+}
