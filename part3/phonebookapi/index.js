@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const mongoModule = require('./mongoModule'); // Import the Mongoose module
 const cors = require('cors');
 const { ObjectId } = require('mongodb');
+const Person = require('./models/person'); // Adjusting the path
+
 
 const app = express();
 app.use(express.json());
